@@ -1,0 +1,2 @@
+** Decentralized, transparent voting system
+

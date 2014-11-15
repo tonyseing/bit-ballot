@@ -27,7 +27,7 @@
         
         <li class="dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-            <i class="glyphicon glyphicon-user"></i> Admin <span class="caret"></span></a>
+            <i class="glyphicon glyphicon-user"></i> <%= session["user"]["name"] %> <span class="caret"></span></a>
           <ul id="g-account-menu" class="dropdown-menu" role="menu">
             <li><a href="#">My Profile</a></li>
             <li><a href="/logout"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
@@ -72,9 +72,9 @@
 	   <div class="row">
             <!-- center left-->	
          	<div class="col-md-7">
-			  <div class="well">Inbox Messages <span class="badge pull-right">3</span></div>
+			  <!-- <div class="well">Inbox Messages <span class="badge pull-right">3</span></div> -->
               
-              <hr>
+              <!-- <hr> -->
               
               <div class="panel panel-default">
                   <div class="panel-heading"><h4>Processing Status</h4></div>
@@ -114,23 +114,23 @@
         </div>
         <div class="panel-body">
           
-          <form class="form form-vertical">
+          <form class="form form-vertical" action="addEvent" method="post">
             <div class="control-group">
               <label>Topic</label>
               <div class="controls">
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" name="event[topic]"></textarea>
               </div>
             </div>      
             <div class="control-group">
               <label>List of Voters</label>
               <div class="controls">
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" name="event[voters]"></textarea>
               </div>
             </div>   
             <div class="control-group">
               <label>List of Candidates</label>
               <div class="controls">
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" name="event[candidates]"></textarea>
               </div>
             </div> 
             

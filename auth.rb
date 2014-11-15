@@ -2,72 +2,69 @@ require "sinatra"
 require "pry"
 require "warden"
 require "mongoid"
-# require "./env.rb"
 
-include Mongo
-# binding.pry
-
-
-use Rack::Session::Cookie, :key => 'rack.session',
-                           :path => '/',
-                           :expire_after => 2592000, # In seconds
-                           :secret => '$uper_$3cr37_K3y'
-# binding.pry
-Mongoid.load!("./mongoid.yml", :production)
+enable :session
+Mongoid.load!("./db.yml", :development)
 
 
-# class YourApp < Sinatra::Application
-	# Warden Configuration
-	use Warden::Manager do |manager|
-		manager.default_strategies :password
-		manager.failure_app = YourApp
+
+# Warden Configuration
+use Warden::Manager do |manager|
+	manager.default_strategies :password
+	manager.failure_app = Sinatra::Application
+end
+ 
+Warden::Manager.before_failure do |env,opts|
+  	env['REQUEST_METHOD'] = 'POST'
+end
+ 
+Warden::Strategies.add(:password) do
+	def authenticate!
 		# binding.pry
-		# manager.serialize_into_session(:current_user) {|user| user.id}
-		# binding.pry
-		# Warden::Manager.serialize_into_session do |user|
-		# 	binding.pry
-		#   	user.id
-		# end
-		# manager.serialize_from_session(:current_user) {|id| User.find_by(:user).find_by_id(id)}
+		user = session[:user]
+	  	begin
+	  		organizer = Organizer.where(email: user["email"]).first
+	  		# decrypt_password = BCrypt::Password.new(organizer.password)
+	  		password = user[:password]
+	  		
+	  		if organizer && decrypt_password == password
+	    		success!(organizer)
+	    	else
+	    		fail!
+	  		end
+	  	rescue Exception => e
+	  		binding.pry
+	  		
+	  	end
 	end
-	 
-	Warden::Manager.before_failure do |env,opts|
-	  	env['REQUEST_METHOD'] = 'POST'
-	end
-	 
-	Warden::Strategies.add(:password) do
-		def authenticate!
-			# binding.pry
-			# User.first(conditions: {username: user[email]})
-		  	begin
-		  		user = User.find_by(email: params["user"]["email"])
-		  		decrypt_password = BCrypt::Password.new(user.password)
-		  		password = params["user"]["password"]
-		  		# binding.pry
-		  		if user && decrypt_password == password
-		    		success!(user)
-		  		end
-		  	rescue Exception => e
-		  		# binding.pry
-		  		fail!("Could not log in")
-		  	end
-		end
-	end
+end
 
-	def warden_handler
-	    env['warden']
-	end
+def warden_handler
+    env['warden']
+end
 
-	def current_user
-	    warden_handler.user
-	end
+def current_user
+    warden_handler.user
+end
 
-	# checked authentication for protected pages
-	def check_authentication
-	    redirect '/login' unless user_authenticated?
-	end
+# checked authentication for protected pages
+def check_authentication
+    redirect URI.encode('?login_error=Organizer\'s credentials needed') + '#login' unless user_authenticated?
+end
 
-        def user_authenticated?
-           warden_handler.authenticated?
-        end
-# end
+def user_authenticated?
+   warden_handler.authenticated?
+end
+
+post '/login' do
+	session[:user] = params[:user]
+	warden_handler.authenticate!
+	if warden_handler.authenticated?
+		session[:user] = session["warden.user.default.key"]
+		redirect "/admin" 
+	end
+end 
+
+post "/unauthenticated" do
+    redirect URI.encode("?login_error=Email or password is incorrect, please try again") + "#login"
+end

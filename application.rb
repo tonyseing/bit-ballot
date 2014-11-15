@@ -17,3 +17,7 @@ get '/logout' do
   session.clear
   redirect '/'
 end
+
+get "/votestatus" do
+	erb :"voteStatus.html"
+end

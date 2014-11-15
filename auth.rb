@@ -24,7 +24,7 @@ Warden::Strategies.add(:password) do
 		user = session[:user]
 	  	begin
 	  		organizer = Organizer.where(email: user["email"]).first
-	  		# decrypt_password = BCrypt::Password.new(organizer.password)
+	  		decrypt_password = BCrypt::Password.new(organizer.password)
 	  		password = user[:password]
 	  		
 	  		if organizer && decrypt_password == password

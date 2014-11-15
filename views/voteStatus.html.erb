@@ -23,17 +23,20 @@
       <a class="navbar-brand" href="#">Bit Ballot</a>
     </div>
     <div class="navbar-collapse collapse">
+    <% if !session["user"].nil? %>
       <ul class="nav navbar-nav navbar-right">
-        
         <li class="dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-            <i class="glyphicon glyphicon-user"></i> <%= session["user"]["name"] %> <span class="caret"></span></a>
+            <i class="glyphicon glyphicon-user"></i> 
+              <%= session["user"]["name"] %>
+            <span class="caret"></span></a>
           <ul id="g-account-menu" class="dropdown-menu" role="menu">
             <li><a href="#">My Profile</a></li>
             <li><a href="/logout"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
           </ul>
         </li>
       </ul>
+      <% end %>
     </div>
   </div><!-- /container -->
 </div>
@@ -45,7 +48,7 @@
     
     <div class="col-md-12">
       <hr>
-      <a href="#"><strong><i class="glyphicon glyphicon-list-alt"></i> Reports</strong></a>  
+      <a href="#"><strong><i class="glyphicon glyphicon-list-alt"></i> Report</strong></a>  
       <hr>    
     </div>
     <div class="">

@@ -4,3 +4,4 @@ gem 'mongoid'
 gem 'rest_client'
 gem 'warden'
 gem 'pry'
+gem "bcrypt"

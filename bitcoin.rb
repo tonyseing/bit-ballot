@@ -11,21 +11,19 @@ module Bitcoin
   def Bitcoin.addresses_holding_asset(asset_id) # all the addresses
     # holding a certain class of coins
     response = RestClient.get "https://api.coinprism.com/v1/assets/#{asset_id}/owners"
-    JSON.parse(response)
+    JSON.parse(response)["owners"]
   end
-
-  def Bitcoin.send_vote(from, to, metadata)
-   values = "{
+  
+  def Bitcoin.send_vote(from, to, metadata_url)
+    values = "{
   'from': #{from}
-  'address': to,
+  'address': #{to},
   'amount': '1',
-  'metadata': 'u=https://site.com/assetdef' }"
-
+  'metadata': 'u=#{metadata_url}' }"
+    
     headers = {
       :content_type => 'application/json'
     }
-
     response = RestClient.post 'https://api.coinprism.com/v1/issueasset?format=json', values, headers
-    
   end
 end

@@ -5,7 +5,6 @@ require './bitcoin.rb'
 require './auth.rb'
 
 get '/' do
-	binding.pry
   erb :"index.html"
 end
 
@@ -15,6 +14,6 @@ get '/admin' do
 end
 
 get '/logout' do
-	session.clear
-	redirect '/'
+  session.clear
+  redirect '/'
 end

@@ -13,7 +13,7 @@ module Bitcoin
     response = RestClient.get "https://api.coinprism.com/v1/assets/#{asset_id}/owners"
     JSON.parse(response)["owners"]
   end
-  
+
   def Bitcoin.send_vote(from, to, metadata_url)
     values = "{
   'from': #{from}

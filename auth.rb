@@ -8,7 +8,7 @@ use Rack::Session::Pool, :expire_after => 2592000
 set :session_secret, 'youwontguessthisever'
 set :sessions, :domain => '/'
 
-Mongoid.load!("./db.yml", :development)
+Mongoid.load!("./mongoid.yml", :development)
 
 # Warden Configuration
 use Warden::Manager do |manager|
@@ -53,7 +53,6 @@ end
 
 # checked authentication for protected pages
 def check_authentication
-	binding.pry
     redirect URI.encode('?login_error=Organizer\'s credentials needed ') + '#login' unless user_authenticated?
 end
 

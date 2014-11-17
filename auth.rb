@@ -12,7 +12,9 @@ Mongoid.load!("./mongoid.yml", :development)
 
 # Warden Configuration
 use Warden::Manager do |manager|
-	manager.default_strategies :password
+	manager.default_strategies :user
+	manager.serialize_into_session{|user| user.email }
+	manager.serialize_from_session{|email| Organizer.where(email: email).first }
 	manager.failure_app = Sinatra::Application
 end
  
@@ -20,12 +22,12 @@ Warden::Manager.before_failure do |env,opts|
   	env['REQUEST_METHOD'] = 'POST'
 end
  
-Warden::Strategies.add(:password) do
+Warden::Strategies.add(:user) do
 	def authenticate!
-		user = session[:user]
+		user = params["user"]
 	  	begin
 	  		if Organizer.where(email: user["email"]).first.nil?
-				redirect URI.encode("?login_error=>> ERROR: Email address or password are incorrect.") + "#login"
+				throw(:warden, {:error => "User not Found", :location => "login"})
 			end
 
 	  		organizer = Organizer.where(email: user["email"]).first
@@ -35,7 +37,7 @@ Warden::Strategies.add(:password) do
 	  		if organizer && decrypt_password == password
 	    		success!(organizer)
 	    	else
-	    		fail!
+	    		throw(:warden, {:error => "Email or password is incorrect, please try again.", :location => "login"})
 	  		end
 	  	rescue Exception => e
 	  		puts e
@@ -53,21 +55,12 @@ end
 
 # checked authentication for protected pages
 def check_authentication
-    redirect URI.encode('?login_error=Organizer\'s credentials needed ') + '#login' unless user_authenticated?
-end
-
-def user_authenticated?
-   warden_handler.authenticated?
+    redirect URI.encode('?login_error=Organizer\'s credentials needed ') + '#login' unless warden_handler.authenticated?
 end
 
 post '/login' do
-	session[:user] = params[:user]
 	warden_handler.authenticate!
-	if warden_handler.authenticated?
-		session[:user] = session["warden.user.default.key"]
-		binding.pry
-		redirect "/admin" 
-	end
+	redirect "/admin" 
 end
 
 post '/signup' do
@@ -101,13 +94,8 @@ post '/signup' do
 		organizer.save!
 
 		# Add user to warden authentication
-		session[:user] = {"email"=>user["email"], "password"=>user["password"]}
 		warden_handler.authenticate!
-		if warden_handler.authenticated?
-			session[:user] = session["warden.user.default.key"]
-			redirect "/admin" 
-		end
-		redirect '/admin'
+		redirect "/admin" 
 	else
 		es = ""
 		errors.each do |e|
@@ -118,5 +106,5 @@ post '/signup' do
 end
 
 post "/unauthenticated" do
-    redirect URI.encode("?login_error=>> ERROR: Email or password is incorrect, please try again << ") + "#login"
+    redirect URI.encode("/?" << env['warden.options'][:"location"] << "_error=>> ERROR: " << env['warden.options'][:"error"] << " << ") + "#" << env['warden.options'][:"location"]
 end

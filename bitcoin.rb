@@ -2,10 +2,13 @@ require 'rest_client'
 require 'pry'
 require 'json'
 
+test_candidates = [{ address => "akH7Jk2rbcDXcZQ8XJwx5h1Jj6JRMiu7kfP", name => "tony"}, { address => "akDJxttL9PdceUj5nKznAr17sUv59BfHPMq", name => "the other guy"}]
+asset_divisibility_factor = 9 # 9  for test
+
 module Bitcoin
   def Bitcoin.balance(address)
     response = RestClient.get "https://api.coinprism.com/v1/addresses/#{address}"
-    JSON.parse(response)["balance"]
+    JSON.parse(response)
   end
 
   def Bitcoin.addresses_holding_asset(asset_id) # all the addresses
@@ -14,16 +17,12 @@ module Bitcoin
     JSON.parse(response)["owners"]
   end
 
-  def Bitcoin.send_vote(from, to, metadata_url)
-    values = "{
-  'from': #{from}
-  'address': #{to},
-  'amount': '1',
-  'metadata': 'u=#{metadata_url}' }"
-    
-    headers = {
-      :content_type => 'application/json'
-    }
-    response = RestClient.post 'https://api.coinprism.com/v1/issueasset?format=json', values, headers
+  def Bitcoin.count_votecoins(candidate_address, asset_divisibility_factor)
+    Bitcoin.balance(candidate_address)["assets"].select { |asset|  asset["id"] == candidate_address }[0]["balance"].to_i / (10 ** asset_divisibility_factor)   
   end
+
+  def Bitcoin.count_unconfirmed_votecoins(candidate_address, color_asset_id)
+  end
+  
+
 end

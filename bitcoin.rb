@@ -2,7 +2,7 @@ require 'rest_client'
 require 'pry'
 require 'json'
 
-test_candidates = [{ address => "akH7Jk2rbcDXcZQ8XJwx5h1Jj6JRMiu7kfP", name => "tony"}, { address => "akDJxttL9PdceUj5nKznAr17sUv59BfHPMq", name => "the other guy"}]
+test_candidates = [{ :address => "akH7Jk2rbcDXcZQ8XJwx5h1Jj6JRMiu7kfP", :name => "tony"}, { :address => "akDJxttL9PdceUj5nKznAr17sUv59BfHPMq", :name => "the other guy"}]
 asset_divisibility_factor = 9 # 9  for test
 
 module Bitcoin

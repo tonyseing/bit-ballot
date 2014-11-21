@@ -13,10 +13,16 @@ describe Bitcoin do
     end
   end
 
+  describe "Asset Divisibility" do
+    it "counts the nth power of 10 that the asset is divisible by" do
+      expect(Bitcoin::get_asset_divisibility(color_id)).to eq(asset_divisibility_factor)
+    end
+  end
+  
   describe "Transparency" do
     it "shows all the addresses on the Blockchain that are allocated this particular votecoin" do
-      expect(Bitcoin.addresses_holding_asset(color_id).map { |address| address["address"]}.include?(test_candidates[0][:address])).to eq(true)
-       expect(Bitcoin.addresses_holding_asset(color_id).map { |address| address["address"]}.include?(test_candidates[0][:address])).to eq(true)      
+      expect(Bitcoin::addresses_holding_asset(color_id).map { |address| address["address"]}.include?(test_candidates[0][:address])).to eq(true)
+       expect(Bitcoin::addresses_holding_asset(color_id).map { |address| address["address"]}.include?(test_candidates[0][:address])).to eq(true)      
     end
   end
 end

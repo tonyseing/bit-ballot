@@ -21,7 +21,16 @@ module Bitcoin
     Bitcoin.balance(candidate_address)["assets"].select { |asset|  asset["id"] == color_id  }[0]["balance"].to_i / (10 ** asset_divisibility_factor)   
   end
 
-  def Bitcoin.count_unconfirmed_votecoins(candidate_address, color_asset_id)
+  def Bitcoin.get_asset_definition(asset_id)
+    response = RestClient.get "https://api.coinprism.com/v1/assets/#{asset_id}"
+    JSON.parse(response)
+  end
+
+  def Bitcoin.get_asset_divisibility(asset_id)
+    Bitcoin.get_asset_definition(asset_id)["divisibility"]
+  end
+
+  def Bitcoin.count_unconfirmed_votecoins(candidate_address, asset_id)
   end
   
 

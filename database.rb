@@ -1,9 +1,6 @@
 require 'mongoid'
 
-# set database config and connect to database here
-
 Mongoid.load!("./mongoid.yml", :development)
-
 
 class Organizer
   include Mongoid::Document
@@ -20,7 +17,6 @@ class Election
   field :state, type: String, default: "registration"
 
   validates_inclusion_of :state, in: ["registration", "commenced", "concluded"]
-
 
   embeds_many :voters
   embedded_in :organizer

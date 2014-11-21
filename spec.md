@@ -3,10 +3,26 @@ How it works
 - A user can create an election
 - Elections consists of eligible voters, eligible candidates, and votes, represented by colored bitcoins
 - Each election's eligibile voters are made public for transparency
-- After voters are entered for an election, voters can receive their vote coin by going to a voting machine where they verify their eligibility and identity, and then enter their wallet address into the application
-- The application then shuffles the addresses and then sends one vote coin to each
-- Voters can now send the received coin to the address of their candidate of choice 
+- Voters generate a bitcoin address, then go to BitBallot to receive a
+  pre-registration number. This pre-registration number is an encryption of
+  their Bitcoin wallet address. The voter keeps the encryption key secret.
+- Voters go to a voting station and are verified of their identity and their
+  voting eligibility. Then they input their pre-registration number (the
+  encrypted string of their bitcoin wallet address) into the BitBallot system
+- Once the pre-registration ends, and the election is ready to begin, voters
+  can vote by
+  1. Going to BitBallot and finishing their registration by submitting their
+     pre-registration number and their encryption key. The BitBallot system
+     checks that the pre-registration number matches one in the database,
+     decrypts the pre-registration number, which yields the voter's bitcoin
+     wallet address. Then the organizer can issue a colored Satoshi to that
+     address. This process ensures that the registrar service that identifies
+     voters and ensures they are eligible to vote never knows the identity of
+     the owners of any of the respective wallets.
+  2. Voter then sends his colored Satoshi (votecoin) to the address of his
+     favored candidate.
 - Coins are counted for each candidate to tally the winner
+- Counting ends once the organizer hits the "End Election Button"
 
 ** Front-end
 

@@ -19,5 +19,5 @@ get '/logout' do
 end
 
 get "/votestatus" do
-	erb :"voteStatus.html"
+  erb :"voteStatus.html"
 end

@@ -14,13 +14,15 @@ class Election
   include Mongoid::Document
   field :name, type: String
   field :description, type: String
-  field :registered_voter_addresses, type: String
+  field :state, type: String, default: "pre-registration"
+
+  validates_inclusion_of :state, in: ["registration", "commenced", "concluded"]
   embeds_many :voters
   embedded_in :organizer
 end
 
 class Voter
   include Mongoid::Document
-  field :name, type: String
+  field :encrypted_address, type: String
   field :received_token, type: Boolean, default: false
 end

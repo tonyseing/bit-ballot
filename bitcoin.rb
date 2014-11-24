@@ -3,8 +3,6 @@ require 'pry'
 require 'json'
 
 
-
-
 module Bitcoin
   def Bitcoin.balance(address)
     response = RestClient.get "https://api.coinprism.com/v1/addresses/#{address}"
@@ -29,9 +27,5 @@ module Bitcoin
   def Bitcoin.get_asset_divisibility(asset_id)
     Bitcoin.get_asset_definition(asset_id)["divisibility"]
   end
-
-  def Bitcoin.count_unconfirmed_votecoins(candidate_address, asset_id)
-  end
-  
 
 end

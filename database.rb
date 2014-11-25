@@ -32,16 +32,21 @@ class Election
       raise "Election already ended"
     end
   end
+
   
   def is_over?
     self.state == "concluded"
   end
 
+  def add_voter(voter)
+    self.voters.create!(voter)
+  end
+  
 end
 
 class Voter
   include Mongoid::Document
   field :encrypted_address, type: String
-  field :received_token, type: Boolean, default: false
+  field :sent_token, type: Boolean, default: false
   embedded_in :election
 end

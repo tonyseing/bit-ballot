@@ -1,4 +1,5 @@
 require 'mongoid'
+require 'gibberish'
 
 Mongoid.load!("./mongoid.yml", :development)
 
@@ -15,12 +16,12 @@ class Election
   field :name, type: String
   field :description, type: String
   field :state, type: String, default: "registration"
-
+  
   validates_inclusion_of :state, in: ["registration", "commenced", "concluded"]
-
+  
   embeds_many :voters
   embedded_in :organizer
-
+  
   def move_next_state!
     if self.state == "registration"
       self.state = "commenced"
@@ -41,12 +42,26 @@ class Election
   def add_voter(voter)
     self.voters.create!(voter)
   end
+
+  def self.encrypt_address(wallet_address, key)
+    Gibberish::AES.new(key).enc(wallet_address)
+  end
+
+  def self.decrypt_address(enc_wallet_address, key)
+    Gibberish::AES.new(key).dec(wallet_address)
+  end
   
 end
 
+
 class Voter
   include Mongoid::Document
+  field :userid, type: String
   field :encrypted_address, type: String
+  field :requested_token, type: Boolean, default: false
   field :sent_token, type: Boolean, default: false
+
+
+  validates_presence_of :userid, :encrypted_address
   embedded_in :election
 end

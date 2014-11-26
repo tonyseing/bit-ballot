@@ -6,6 +6,7 @@ describe Election do
   before :all do
     @test_organizer = Organizer.create(name: "Tester", email: "tester@test.com")
     @test_election = @test_organizer.elections.create(name: "Test Election", description: "This is a test election")
+    @test_voter = { userid: "tester", encrypted_address: "fdsafasfasfasf" }
   end
   
   describe "Initial state" do
@@ -31,16 +32,23 @@ describe Election do
 
   describe "Voter registration" do
     it "adds voters to registry" do
-      @test_election.add_voter({ encrypted_address: "blahblahblah"  })
+      @test_election.add_voter(@test_voter)
       expect(@test_election.voters.count).to eq(1)
     end
 
-    it "initalizes each voter with **unsent** as the status" do
-      @test_election.add_voter({})
+    it "initalizes each voter with false value for sent token as the status" do
+      @test_election.add_voter(@test_voter)
       @newvoter = @test_election.voters.first
       expect(@newvoter.sent_token).to eq(false)
     end
+
+    it "initalizes each voter with false value for requested token status" do
+      @test_election.add_voter(@test_voter)
+      @newvoter = @test_election.voters.first
+      expect(@newvoter.requested_token).to eq(false)
+    end
   end
+
 
   
   after :each do
@@ -52,5 +60,3 @@ describe Election do
   end
   
 end
-
-
